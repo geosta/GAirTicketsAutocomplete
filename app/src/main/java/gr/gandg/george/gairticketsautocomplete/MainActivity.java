@@ -3,10 +3,16 @@ package gr.gandg.george.gairticketsautocomplete;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,25 +22,48 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    AutoCompleteTextView actv;
     String amadeusKey;
-
+    AutoCompleteTextView actv;
+    ArrayAdapter<String> mAirportAdapter;
+    List<String> airports;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        final AirportParser ap = new AirportParser();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        airports = new ArrayList<String>();
 
         amadeusKey = BuildConfig.AMADEUS_API_KEY;
         actv = (AutoCompleteTextView)findViewById(R.id.autoCompleteTextView);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, COUNTRIES);
+        mAirportAdapter  = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, airports);
+        mAirportAdapter.setNotifyOnChange(true);
+        actv.setAdapter(mAirportAdapter);
+        actv.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
-        actv.setAdapter(adapter);
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (count >=3) {
+                    ap.execute(actv.getText().toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
     }
 
 
@@ -47,9 +76,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         protected ArrayList<String> doInBackground(String... params) {
-            if (airportSearchString == null) {
+            if (params[0] == null) {
                 return null;
             }
+
+            airportSearchString = params[0];
 
             API_KEY = amadeusKey;
 
@@ -117,8 +148,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private ArrayList<String> parseJson(String json) {
+            ArrayList<String>results = new ArrayList<String>();
+            try {
+                JSONObject airportJson = new JSONObject(json);
+                JSONArray airportArray = airportJson.getJSONArray("");
+                for (int i=0; i< airportArray.length();i++) {
+                    JSONObject aiportObject = airportArray.getJSONObject(i);
+                    String theAirport = aiportObject.getString("label");
+                    results.add(theAirport);
+                }
 
-            return new ArrayList<String>();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            return  results;
         }
 
 
@@ -126,6 +171,9 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(ArrayList<String> result) {
 //            TextView mtv = (TextView)findViewById(R.id.main_textview);
 //            mtv.setText(s);
+            //mAirportAdapter.clear();
+            airports.clear();
+            airports = result;
         }
     }
 
