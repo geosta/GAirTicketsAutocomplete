@@ -11,7 +11,6 @@
     tools:context="gr.gandg.george.gairticketsautocomplete.MainActivity">
 
     <AutoCompleteTextView
-        android:text="AutoCompleteTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -21,5 +20,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:completionThreshold="3"
-        android:completionHint="Αναχώριση"/>
+        android:completionHint="Αναχώριση"
+        android:textColor="?attr/colorPrimary" />
 </RelativeLayout>

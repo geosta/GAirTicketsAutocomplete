@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        final AirportParser ap = new AirportParser();
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -55,9 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (count >=3) {
-                    ap.execute(actv.getText().toString());
-                }
+                (new AirportParser()).execute(actv.getText().toString());
             }
 
             @Override
@@ -150,8 +146,7 @@ public class MainActivity extends AppCompatActivity {
         private ArrayList<String> parseJson(String json) {
             ArrayList<String>results = new ArrayList<String>();
             try {
-                JSONObject airportJson = new JSONObject(json);
-                JSONArray airportArray = airportJson.getJSONArray("");
+                JSONArray airportArray = new JSONArray(json);
                 for (int i=0; i< airportArray.length();i++) {
                     JSONObject aiportObject = airportArray.getJSONObject(i);
                     String theAirport = aiportObject.getString("label");
@@ -174,6 +169,12 @@ public class MainActivity extends AppCompatActivity {
             //mAirportAdapter.clear();
             airports.clear();
             airports = result;
+            mAirportAdapter  = new ArrayAdapter<String>(getApplicationContext(),
+                    android.R.layout.simple_dropdown_item_1line, airports);
+            mAirportAdapter.setNotifyOnChange(true);
+            actv.setAdapter(mAirportAdapter);
+            actv.performCompletion();
+
         }
     }
 
