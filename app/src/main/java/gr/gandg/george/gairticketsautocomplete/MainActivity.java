@@ -24,6 +24,11 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+
+// #######################
+// With AutoComplete Text View
+//##################################
+
 public class MainActivity extends AppCompatActivity {
 
     String amadeusKey;
