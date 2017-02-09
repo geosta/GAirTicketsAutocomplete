@@ -7,8 +7,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +32,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     String amadeusKey;
-    AutoCompleteTextView actv;
+    EditText searchEditText;
+    ListView searchResultsListView;
     ArrayAdapter<String> mAirportAdapter;
     List<String> airports;
 
@@ -45,20 +46,23 @@ public class MainActivity extends AppCompatActivity {
         airports = new ArrayList<String>();
 
         amadeusKey = BuildConfig.AMADEUS_API_KEY;
-        actv = (AutoCompleteTextView)findViewById(R.id.autoCompleteTextView);
+        searchEditText = (EditText)findViewById(R.id.textView_search);
+        searchResultsListView = (ListView)findViewById(R.id.listView_searchResults);
 
         mAirportAdapter  = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, airports);
         mAirportAdapter.setNotifyOnChange(true);
-        actv.setAdapter(mAirportAdapter);
-        actv.addTextChangedListener(new TextWatcher() {
+        searchResultsListView.setAdapter(mAirportAdapter);
+        searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                (new AirportParser()).execute(actv.getText().toString());
+                String searchString = searchEditText.getText().toString();
+                if (searchString != null)
+                    (new AirportParser()).execute(searchString);
             }
 
             @Override
@@ -177,8 +181,7 @@ public class MainActivity extends AppCompatActivity {
             mAirportAdapter  = new ArrayAdapter<String>(getApplicationContext(),
                     android.R.layout.simple_dropdown_item_1line, airports);
             mAirportAdapter.setNotifyOnChange(true);
-            actv.setAdapter(mAirportAdapter);
-            actv.performCompletion();
+            searchResultsListView.setAdapter(mAirportAdapter);
 
         }
     }
