@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final AirportParser airportParser = new AirportParser();
         airports = new ArrayList<String>();
 
         amadeusKey = BuildConfig.AMADEUS_API_KEY;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         mAirportAdapter  = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, airports);
         mAirportAdapter.setNotifyOnChange(true);
+        //mAirportAdapter.notifyDataSetChanged();
         searchResultsListView.setAdapter(mAirportAdapter);
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -63,10 +65,8 @@ public class MainActivity extends AppCompatActivity {
                 String searchString = searchEditText.getText().toString();
                 if (searchString == null  || searchString.length()==0) {
                     airports.clear();
-                    mAirportAdapter  = new ArrayAdapter<String>(getApplicationContext(),
-                            android.R.layout.simple_dropdown_item_1line, airports);
-                    mAirportAdapter.setNotifyOnChange(true);
-                    searchResultsListView.setAdapter(mAirportAdapter);
+                    mAirportAdapter.clear();
+                    mAirportAdapter. notifyDataSetChanged();
 
                 } else if (searchString.length() >=3)
                     (new AirportParser()).execute(searchString);
@@ -180,15 +180,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ArrayList<String> result) {
-//            TextView mtv = (TextView)findViewById(R.id.main_textview);
-//            mtv.setText(s);
-            //mAirportAdapter.clear();
+
             airports.clear();
             airports = result;
-            mAirportAdapter  = new ArrayAdapter<String>(getApplicationContext(),
-                    android.R.layout.simple_dropdown_item_1line, airports);
-            mAirportAdapter.setNotifyOnChange(true);
-            searchResultsListView.setAdapter(mAirportAdapter);
+
+            mAirportAdapter.clear();
+            mAirportAdapter.addAll(airports);
+            mAirportAdapter.notifyDataSetChanged();
 
         }
     }
