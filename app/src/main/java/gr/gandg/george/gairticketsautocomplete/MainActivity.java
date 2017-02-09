@@ -61,7 +61,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String searchString = searchEditText.getText().toString();
-                if (searchString != null)
+                if (searchString == null  || searchString.length()==0) {
+                    airports.clear();
+                    mAirportAdapter  = new ArrayAdapter<String>(getApplicationContext(),
+                            android.R.layout.simple_dropdown_item_1line, airports);
+                    mAirportAdapter.setNotifyOnChange(true);
+                    searchResultsListView.setAdapter(mAirportAdapter);
+
+                } else if (searchString.length() >=3)
                     (new AirportParser()).execute(searchString);
             }
 
