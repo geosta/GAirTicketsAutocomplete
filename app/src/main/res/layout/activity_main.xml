@@ -8,19 +8,37 @@
     android:weightSum="10"
     tools:context="gr.gandg.george.gairticketsautocomplete.MainActivity">
 
-    <EditText
-        android:hint="search..."
-        android:layout_width="match_parent"
-        android:id="@+id/textView_search"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
 
-    <ListView
+    <!-- ####### ΑΕΡΟΔΡΟΜΙΑ ΑΝΑΧΩΡΗΣΗΣ / ΠΡΟΟΡΙΣΜΟΥ ####### -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_weight="9"
-        android:layout_height="0dp"
-        android:id="@+id/listView_searchResults"
-        android:background="@android:color/holo_blue_light" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:weightSum="2"
+        android:background="@android:color/white"
+        android:padding="5dp"
+        android:focusableInTouchMode="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/from_airport_textview"
+
+            android:hint="Από"
+            android:layout_marginBottom="5dp"
+            android:onClick="selectAirport" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/to_airport_textview"
+
+            android:hint="Προς"
+            android:layout_marginBottom="5dp"
+            android:onClick="selectAirport"/>
+
+    </LinearLayout>
+
 
 
 
